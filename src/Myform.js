@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -9,7 +9,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from 'react';
 
 export default function MyForm(props) {
+
+
     const[form,setform]=useState({
+
         title : "",
         firstName:"",
         lastName:"",
@@ -19,16 +22,54 @@ export default function MyForm(props) {
        
     });
 
+    useEffect(()=>{
+      if(props.id){
+
+      let p = props.arraydata.find((value)=>{
+
+          return value.id == props.id;
+
+      })
+
+      setform(p)
+    }
+    },[])
+
     const handleInput=(e)=>{
+
         setform({...form,[e.target.name] : e.target.value})
     }
     const handleSubmit = (e)=>{
 
-        e.preventDefault();
-        console.log(form);    
-    
-    
+      props.handleClose();
+
+      let d = [...props.arraydata];
+
+      if(props.id > 0)
+      {
+        let p = d.map((value)=>{
+
+          if( value.id==props.id)
+          {
+
+            return {...form,id:value.id}
+          }
+          else
+          {
+            return value;
+          }
+         })
+             props.arraysetData(p);
+          }
+          else
+          {
+
+      d.push({...form,id: d.length +1});
+
+      props.arraysetData(d);
+
       }
+    }
 
     
 
@@ -49,6 +90,7 @@ export default function MyForm(props) {
             fullWidth
             variant="standard"
             name='title'
+            value={form.title}
             onChange={handleInput} 
           />
           <TextField
@@ -60,6 +102,7 @@ export default function MyForm(props) {
             fullWidth
             variant="standard"
             name='firstName'
+            value={form.firstName}
             onChange={handleInput} 
           />
           <TextField
@@ -71,6 +114,7 @@ export default function MyForm(props) {
             fullWidth
             variant="standard"
             name='lastName'
+            value={form.lastName}
             onChange={handleInput} 
           />
           <TextField
@@ -82,6 +126,7 @@ export default function MyForm(props) {
             fullWidth
             variant="standard"
             name='email'
+            value={form.email}
             onChange={handleInput} 
           />
           <TextField
@@ -93,6 +138,7 @@ export default function MyForm(props) {
             fullWidth
             variant="standard"
             name="address"
+            value={form.address}
             onChange={handleInput} 
           />
           <TextField
@@ -104,6 +150,7 @@ export default function MyForm(props) {
             fullWidth
             variant="standard"
             name='city'
+            value={form.city}
             onChange={handleInput} 
           />
         </DialogContent>
